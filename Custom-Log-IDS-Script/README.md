@@ -81,19 +81,13 @@ Result: both alert entries appeared in Splunk, confirming the custom script's ou
 ## Screenshots
 
 ### Screenshots
-* **Script + data confirmation**
-*![Script and Data](01-script-read-and-conf-data.png)
-* **Script detects brute-force**
-* ![Brute Force Detection](02-script-detects-bruteforce.png)
-* **Alerts saved to file**
-* ![Alerts Saved](03-alerts-saved-to-file.png)
-* **Live re-detection confirmed**
-* ![Live Re-detection](04-live-redetection-confirmed.png)
-* **Splunk custom alerts**
-* ![Splunk Alerts](05-splunk-custom-alerts.png)
-* **Bash one-liner comparison**
-* ![Bash Comparison](06-bash-one-liner-comparison.png)
-
+### Screenshots
+* **Script + data confirmation** ![Script and Data](screenshots/01-confirm-data-and-script.png)
+* **Script detects brute-force** ![Brute Force Detection](screenshots/02-script-detects-bruteforce.png)
+* **Alerts saved to file** ![Alerts Saved](screenshots/03-ids-alerts-saved.png)
+* **Live re-detection confirmed** ![Live Re-detection](screenshots/04-script-rerun-confirms-detection.png)
+* **Splunk custom alerts** ![Splunk Alerts](screenshots/05-splunk-ids-custom-alerts.png)
+* **Bash one-liner comparison** ![Bash Comparison](screenshots/06-bash-oneliner-comparison.png)
 
 ## What I Learned
 - How to parse unstructured log text with regex and aggregate findings per source IP, as an alternative/complement to relying solely on a SIEM's prebuilt detection rules
