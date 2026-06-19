@@ -42,30 +42,39 @@ index=main "Failed password"
 ## Screenshots
 
 ![Hydra attack](screenshots/01-hydra-attack-vm1.png)
+
 *Hydra brute-forcing SSH from the attacker VM*
 
 ![Auth log](screenshots/02-auth-log-victim-vm2.png)
+
 *Live failed login attempts captured on the victim*
 
 ![Splunk search](screenshots/03-splunk-failed-password-search.png)
+
 *24 failed password events detected in Splunk*
 
 ![Dashboard](screenshots/04-splunk-ssh-dashboard.png)
-*SSH monitoring dashboard — failed logins by username, attacker IP stats, geo-map*
+
+*SSH monitoring dashboard — failed logins by username, attacker IP stats*
 
 ![Second attack run](screenshots/05-hydra-second-attack-run.png)
+
 *Repeat attack run against a second target to validate detection consistency*
 
 ![Attack completed](screenshots/06-hydra-attack-completed.png)
+
 *Hydra attack run completion state*
 
 ![Alert list](screenshots/07-splunk-alert-list.png)
+
 *Saved alert enabled and scheduled in Splunk*
 
 ![Alert trigger history](screenshots/08-splunk-alert-trigger-history.png)
+
 *Alert trigger history — fired 3 times, confirming real-time detection*
 
 ![Monitoring timechart](screenshots/09-ssh-monitoring-timechart.png)
+
 *Failed login attempts over a 24-hour window*
 
 ## What I Learned
