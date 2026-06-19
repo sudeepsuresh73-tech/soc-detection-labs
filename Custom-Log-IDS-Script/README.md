@@ -80,23 +80,20 @@ Result: both alert entries appeared in Splunk, confirming the custom script's ou
 
 ## Screenshots
 
-**Script + data confirmation**
-Confirming 96 failed-password lines exist in auth.log; opening the detection script in nano
+### Screenshots
+* **Script + data confirmation**
+*![Script and Data](01-script-read-and-conf-data.png)
+* **Script detects brute-force**
+* ![Brute Force Detection](02-script-detects-bruteforce.png)
+* **Alerts saved to file**
+* ![Alerts Saved](03-alerts-saved-to-file.png)
+* **Live re-detection confirmed**
+* ![Live Re-detection](04-live-redetection-confirmed.png)
+* **Splunk custom alerts**
+* ![Splunk Alerts](05-splunk-custom-alerts.png)
+* **Bash one-liner comparison**
+* ![Bash Comparison](06-bash-one-liner-comparison.png)
 
-**Script detects brute-force**
-First full script run — both attacking IPs flagged with attempt counts and targeted usernames
-
-**Alerts saved to file**
-Contents of /var/log/ids_alerts.log after running the script with --output
-
-**Live re-detection confirmed**
-Second script run showing the attempt count increase (72 → 84), proving live log tracking
-
-**Splunk custom alerts**
-Splunk search showing the script's alerts ingested under sourcetype=ids_custom
-
-**Bash one-liner comparison**
-Bash one-liner producing matching results to the Python script, used as cross-validation
 
 ## What I Learned
 - How to parse unstructured log text with regex and aggregate findings per source IP, as an alternative/complement to relying solely on a SIEM's prebuilt detection rules
