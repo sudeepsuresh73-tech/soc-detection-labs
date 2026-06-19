@@ -80,8 +80,7 @@ Result: both alert entries appeared in Splunk, confirming the custom script's ou
 
 ## Screenshots
 
-* **Script + data confirmation**
-  ![Script and Data](screenshots/01-confirm-data-and-script.png)
+* **Script + data confirmation**![Script and Data](screenshots/01-confirm-data-and-script.png)
 * **Script detects brute-force**
   ![Brute Force Detection](screenshots/02-script-detects-bruteforce.png)
 * **Alerts saved to file**
