@@ -70,7 +70,6 @@ Wireshark Conversations view of baseline.pcap — 6 small Ethernet conversations
 Wireshark Conversations view of attack.pcap — 4,001 TCP conversations, one stream alone reaching 20,012 packets
 
 ![Attack TCP conversation detail](./screenshots/03b-attack-tcp-conversations.png)
-
 TCP tab detail showing sequential connections to many different destination ports — the port scan signature
 
 ![Baseline I/O graph](./screenshots/04-baseline-iograph.png)
