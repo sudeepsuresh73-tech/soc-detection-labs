@@ -75,10 +75,10 @@ Splunk returned 4 events — all of them the analyst's own sudo tcpdump commands
 
 ## Screenshots
 
-![Netcat listener active](./screenshots/01-netcat-listener.png)
+![Netcat listener active](./screenshots/01-netcat-listener-vm1.png)
 Attacker VM (rockzz) running nc -lvnp 4444, listening on all interfaces on TCP port 4444 waiting for an inbound reverse shell connection
 
-![Reverse shell established](./screenshots/02-reverse-shell-established.png)
+![Reverse shell established](./screenshots/02-shell-command-executed.png)
 Listener received connection from 192.168.56.104:33412 — attacker executed whoami, id, hostname, uname -a, and cat /etc/passwd remotely, with the victim returning full user context and system info (Linux kali 6.18.12+kali-amd64)
 
 ![Wireshark port 4444 filter](./screenshots/03-wireshark-port4444.png)
@@ -87,10 +87,10 @@ Filtered packet view (tcp.port == 4444) showing sustained bi-directional TCP con
 ![Wireshark TCP stream](./screenshots/04-wireshark-tcp-stream.png)
 Follow TCP Stream reconstructing the full reverse shell session in plaintext — attacker prompts, whoami/id commands, and complete group membership output visible with no decryption required (7 client packets, 3 server packets, 828 bytes total)
 
-![auth.log detection gap](./screenshots/05-authlog-detection-gap.png)
+![auth.log detection gap](./screenshots/05-authlog-no-detection.png)
 grep -a "4444\|reverse\|bash" /var/log/auth.log returning only sudo tcpdump commands and a useradd entry — zero evidence of the reverse shell session, its network connection, or the bash -i execution
 
-![Splunk search results](./screenshots/06-splunk-port4444.png)
+![Splunk search results](./screenshots/06-splunk-port4444-search.png)
 Splunk search index=* 4444 returning 4 events over All Time — all of them sudo tcpdump commands from the analyst's own capture activity, confirming the host-log detection gap propagates through the SIEM layer
 
 ## What I Learned
