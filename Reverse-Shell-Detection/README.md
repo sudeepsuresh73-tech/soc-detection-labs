@@ -55,7 +55,7 @@ Wireshark showed a sustained bi-directional TCP conversation between 192.168.56.
 Right-clicked a packet → Follow → TCP Stream. The entire reverse shell session was reconstructed in plaintext, revealing:
 - Every command typed by the attacker (whoami, id, cat /etc/passwd)
 - Every response returned from the victim
-- User context (uid=1000(kali) gid=1000(kali) groups=...)
+- Full user context (uid=1000(kali) gid=1000(kali) groups=1000(kali),4(adm),20(dialout),24(cdrom)...)
 
 This confirmed that reverse shell traffic over unencrypted TCP is fully readable to anyone with network visibility.
 
@@ -76,27 +76,28 @@ Splunk returned 4 events — all of them the analyst's own sudo tcpdump commands
 ## Screenshots
 
 ![Netcat listener active](./screenshots/01-netcat-listener.png)
-Attacker VM running nc -lvnp 4444, waiting for an inbound reverse shell connection on all interfaces
+Attacker VM (rockzz) running nc -lvnp 4444, listening on all interfaces on TCP port 4444 waiting for an inbound reverse shell connection
 
 ![Reverse shell established](./screenshots/02-reverse-shell-established.png)
-Both terminals side by side — listener received connection from 192.168.56.104 and shell commands (whoami, id, hostname, uname -a, cat /etc/passwd) executed remotely on the victim
+Listener received connection from 192.168.56.104:33412 — attacker executed whoami, id, hostname, uname -a, and cat /etc/passwd remotely, with the victim returning full user context and system info (Linux kali 6.18.12+kali-amd64)
 
 ![Wireshark port 4444 filter](./screenshots/03-wireshark-port4444.png)
-Filtered packet view showing sustained bi-directional TCP traffic between 192.168.56.104 and 192.168.56.103 on port 4444 with multiple PSH/ACK packets
+Filtered packet view (tcp.port == 4444) showing sustained bi-directional TCP conversation between 192.168.56.104 and 192.168.56.103, with SYN/ACK handshake followed by continuous PSH/ACK packets — the signature of live interactive shell traffic
 
 ![Wireshark TCP stream](./screenshots/04-wireshark-tcp-stream.png)
-Follow TCP Stream reconstructing the full reverse shell session in plaintext — attacker commands and victim responses visible including full id output
+Follow TCP Stream reconstructing the full reverse shell session in plaintext — attacker prompts, whoami/id commands, and complete group membership output visible with no decryption required (7 client packets, 3 server packets, 828 bytes total)
 
 ![auth.log detection gap](./screenshots/05-authlog-detection-gap.png)
-grep of /var/log/auth.log returning only sudo tcpdump and useradd entries — zero evidence of the reverse shell itself
+grep -a "4444\|reverse\|bash" /var/log/auth.log returning only sudo tcpdump commands and a useradd entry — zero evidence of the reverse shell session, its network connection, or the bash -i execution
 
 ![Splunk search results](./screenshots/06-splunk-port4444.png)
-Splunk search index=* 4444 returning 4 events, all analyst tcpdump activity — confirming the host-log detection gap at the SIEM layer
+Splunk search index=* 4444 returning 4 events over All Time — all of them sudo tcpdump commands from the analyst's own capture activity, confirming the host-log detection gap propagates through the SIEM layer
 
 ## What I Learned
 - Why reverse shells are a preferred attacker technique: outbound connections bypass most firewall rules, and the attack leaves no trace in authentication logs
 - That /dev/tcp/ in bash creates a network socket without invoking SSH, sudo, or PAM — which is exactly why auth.log never records the session
 - How to reconstruct an entire attacker session from raw packets using Wireshark's Follow TCP Stream, provided the traffic is unencrypted
-- Why interface selection matters when capturing traffic: using the wrong interface (eth1 instead of eth2) produced an empty PCAP file — -i any is a safer default in lab environments
+- Why interface selection matters when capturing traffic: using the wrong interface (eth1 instead of eth2) produced an empty 24-byte PCAP file — -i any is a safer default in lab environments
 - The core SOC insight from this lab: **host logs and SIEMs that ingest only host logs will miss reverse shells entirely.** Detection requires network-layer telemetry (Zeek, Sysmon for Linux, firewall flow logs, or full packet capture) fed into the SIEM alongside host logs
 - Why SOC alerting must include rules for outbound connections on uncommon ports (4444, 9001, etc.), long-lived low-volume TCP sessions (beaconing), and the /dev/tcp/ command signature in process execution logs
+  
