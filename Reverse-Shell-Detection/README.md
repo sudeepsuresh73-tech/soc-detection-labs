@@ -81,7 +81,7 @@ Attacker VM (rockzz) running nc -lvnp 4444, listening on all interfaces on TCP p
 ![Reverse shell established](./screenshots/02-shell-command-executed.png)
 Listener received connection from 192.168.56.104:33412 — attacker executed whoami, id, hostname, uname -a, and cat /etc/passwd remotely, with the victim returning full user context and system info (Linux kali 6.18.12+kali-amd64)
 
-![Wireshark port 4444 filter](./screenshots/03-wireshark-port4444.png)
+![Wireshark port 4444 filter](./screenshots/03-wireshark-port4444-filter.png)
 Filtered packet view (tcp.port == 4444) showing sustained bi-directional TCP conversation between 192.168.56.104 and 192.168.56.103, with SYN/ACK handshake followed by continuous PSH/ACK packets — the signature of live interactive shell traffic
 
 ![Wireshark TCP stream](./screenshots/04-wireshark-tcp-stream.png)
