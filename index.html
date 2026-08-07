@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOC Detection Labs — Sudeep S.</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #00ff88;
+      --green-dim: #00cc6a;
+      --green-faint: rgba(0,255,136,0.07);
+      --red: #ff4d6a;
+      --amber: #ffb020;
+      --blue: #4da6ff;
+      --bg: #0a0f0a;
+      --surface: #0f1a0f;
+      --surface2: #152015;
+      --border: rgba(0,255,136,0.18);
+      --border-strong: rgba(0,255,136,0.35);
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Inter', sans-serif;
+    }
+    html, body { background: var(--bg); color: var(--green); font-family: var(--mono); min-height: 100vh; }
+    .root { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+    .header { margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+    .header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-red { background: #ff5f57; }
+    .dot-amber { background: #ffbd2e; }
+    .dot-green { background: #28ca41; }
+    .repo-path { font-size: 13px; color: rgba(0,255,136,0.6); margin-left: 4px; }
+    .repo-path span { color: var(--green); font-weight: 600; }
+    .repo-title { font-size: 26px; font-family: var(--sans); font-weight: 600; color: #fff; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .repo-desc { font-size: 14px; color: rgba(0,255,136,0.65); line-height: 1.6; font-family: var(--sans); max-width: 680px; }
+    .stats-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 1rem 0 1.5rem; }
+    .stat-chip { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(0,255,136,0.7); border: 1px solid var(--border); border-radius: 20px; padding: 5px 14px; background: var(--green-faint); font-family: var(--sans); }
+    .stat-chip i { font-size: 15px; color: var(--green); }
+    .stat-chip strong { color: #fff; }
+    .section-label { font-size: 11px; letter-spacing: 2px; color: rgba(0,255,136,0.5); text-transform: uppercase; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .labs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+    .lab-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+    .lab-card:hover { border-color: var(--border-strong); background: var(--surface2); }
+    .lab-card.active { border-color: var(--green); background: var(--green-faint); }
+    .lab-num { font-size: 10px; color: rgba(0,255,136,0.4); margin-bottom: 4px; font-family: var(--mono); letter-spacing: 1px; }
+    .lab-name { font-size: 13px; font-family: var(--sans); font-weight: 500; color: #fff; margin-bottom: 8px; line-height: 1.3; }
+    .lab-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
+    .tag { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-family: var(--sans); font-weight: 500; border: 1px solid; }
+    .tag-green { background: rgba(0,255,136,0.08); color: #00ff88; border-color: rgba(0,255,136,0.25); }
+    .tag-blue { background: rgba(77,166,255,0.08); color: #4da6ff; border-color: rgba(77,166,255,0.25); }
+    .tag-amber { background: rgba(255,176,32,0.08); color: #ffb020; border-color: rgba(255,176,32,0.25); }
+    .tag-red { background: rgba(255,77,106,0.08); color: #ff4d6a; border-color: rgba(255,77,106,0.25); }
+    .lab-status { display: flex; align-items: center; gap: 5px; font-size: 11px; color: rgba(0,255,136,0.55); font-family: var(--sans); }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .detail-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 1.5rem; display: none; }
+    .detail-panel.visible { display: block; }
+    .detail-title { font-size: 15px; font-family: var(--sans); font-weight: 600; color: #fff; margin-bottom: 8px; }
+    .detail-body { font-size: 13px; color: rgba(0,255,136,0.7); line-height: 1.7; font-family: var(--sans); margin-bottom: 12px; }
+    .detail-tools { display: flex; gap: 8px; flex-wrap: wrap; }
+    .spl-block { background: #060d06; border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-top: 14px; }
+    .spl-label { font-size: 10px; color: rgba(0,255,136,0.4); letter-spacing: 1.5px; margin-bottom: 8px; }
+    .spl-code { font-size: 12px; color: #a8ffcc; line-height: 1.7; white-space: pre-wrap; word-break: break-word; font-family: var(--mono); }
+    .spl-pipe { color: var(--amber); }
+    .spl-kw { color: #4da6ff; }
+    .spl-val { color: var(--green); }
+    .stack-section { margin-bottom: 1.5rem; }
+    .stack-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .stack-label { font-size: 12px; font-family: var(--sans); color: rgba(0,255,136,0.7); width: 120px; flex-shrink: 0; }
+    .stack-bar-bg { flex: 1; height: 6px; background: rgba(0,255,136,0.08); border-radius: 3px; overflow: hidden; }
+    .stack-bar-fill { height: 100%; border-radius: 3px; }
+    .stack-pct { font-size: 11px; color: rgba(0,255,136,0.5); width: 36px; text-align: right; }
+    .footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+    .footer-text { font-size: 12px; color: rgba(0,255,136,0.4); font-family: var(--sans); }
+    .gh-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-family: var(--sans); font-weight: 500; color: #000; background: var(--green); border: none; border-radius: 6px; padding: 8px 18px; cursor: pointer; text-decoration: none; transition: background 0.2s; }
+    .gh-btn:hover { background: var(--green-dim); }
+    .blink { animation: blink 1.2s step-end infinite; }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+  </style>
+</head>
+<body>
+<div class="root">
+  <div class="header">
+    <div class="header-top">
+      <div class="terminal-dot dot-red"></div>
+      <div class="terminal-dot dot-amber"></div>
+      <div class="terminal-dot dot-green"></div>
+      <span class="repo-path">github.com / sudeepsuresh73-tech / <span>soc-detection-labs</span></span>
+    </div>
+    <div class="repo-title">SOC Detection Labs<span class="blink" style="color:var(--green);margin-left:6px;">_</span></div>
+    <div class="repo-desc">A hands-on Security Operations Center lab portfolio — 10 detection engineering labs built in a home lab using Splunk, Kali Linux, and Python. Covers brute-force, port scans, reverse shells, beaconing, web attacks, and more.</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-chip"><i class="ti ti-flask" aria-hidden="true"></i> <strong>10</strong> labs</div>
+    <div class="stat-chip"><i class="ti ti-brand-python" aria-hidden="true"></i> Python IDS</div>
+    <div class="stat-chip"><i class="ti ti-shield-check" aria-hidden="true"></i> Splunk SPL</div>
+    <div class="stat-chip"><i class="ti ti-network" aria-hidden="true"></i> Kali Linux VMs</div>
+    <div class="stat-chip"><i class="ti ti-code" aria-hidden="true"></i> Detection Engineering</div>
+  </div>
+  <div class="section-label">Detection Labs — click to explore</div>
+  <div class="labs-grid" id="labsGrid"></div>
+  <div class="detail-panel" id="detailPanel">
+    <div class="detail-title" id="detailTitle"></div>
+    <div class="detail-body" id="detailBody"></div>
+    <div class="detail-tools" id="detailTools"></div>
+    <div class="spl-block" id="splBlock" style="display:none">
+      <div class="spl-label">SAMPLE SPL QUERY</div>
+      <div class="spl-code" id="splCode"></div>
+    </div>
+  </div>
+  <div class="stack-section">
+    <div class="section-label">Tech stack</div>
+    <div class="stack-row">
+      <div class="stack-label">Splunk / SPL</div>
+      <div class="stack-bar-bg"><div class="stack-bar-fill" style="width:90%;background:#00ff88;"></div></div>
+      <div class="stack-pct">90%</div>
+    </div>
+    <div class="stack-row">
+      <div class="stack-label">Python</div>
+      <div class="stack-bar-bg"><div class="stack-bar-fill" style="width:70%;background:#4da6ff;"></div></div>
+      <div class="stack-pct">70%</div>
+    </div>
+    <div class="stack-row">
+      <div class="stack-label">Kali Linux</div>
+      <div class="stack-bar-bg"><div class="stack-bar-fill" style="width:80%;background:#ffb020;"></div></div>
+      <div class="stack-pct">80%</div>
+    </div>
+    <div class="stack-row">
+      <div class="stack-label">Network tools</div>
+      <div class="stack-bar-bg"><div class="stack-bar-fill" style="width:65%;background:#ff4d6a;"></div></div>
+      <div class="stack-pct">65%</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-text">Built by Sudeep S. &nbsp;·&nbsp; Cybersecurity Intern &nbsp;·&nbsp; SOC Operations</div>
+    <a class="gh-btn" href="https://github.com/sudeepsuresh73-tech/soc-detection-labs" target="_blank">
+      <i class="ti ti-brand-github" aria-hidden="true"></i> View on GitHub
+    </a>
+  </div>
+</div>
+<script>
+const labs = [
+  { num:"LAB-01", name:"SSH Brute-Force Detection", tags:[["Splunk","green"],["SSH","blue"],["Brute-force","red"]], desc:"Detected SSH brute-force attacks by correlating multiple failed login attempts from the same IP within a short time window. Built SPL alerting rules with threshold tuning to minimize false positives.", tools:["Splunk","Hydra","Kali Linux"], spl:`index=main sourcetype=syslog "Failed password"\n| <span class="spl-kw">stats</span> <span class="spl-val">count</span> by src_ip, user\n| <span class="spl-pipe">where</span> count &gt; 5\n| <span class="spl-kw">sort</span> -count` },
+  { num:"LAB-02", name:"Port Scan Detection", tags:[["Splunk","green"],["Nmap","amber"],["Recon","red"]], desc:"Detected port scanning activity by identifying hosts probing a high number of unique destination ports in a short window. Correlated scan patterns with Nmap signatures.", tools:["Splunk","Nmap","Wireshark"], spl:`index=main sourcetype=network_traffic\n| <span class="spl-kw">stats</span> <span class="spl-val">dc(dest_port)</span> as unique_ports by src_ip\n| <span class="spl-pipe">where</span> unique_ports &gt; 20\n| <span class="spl-kw">sort</span> -unique_ports` },
+  { num:"LAB-03", name:"Reverse Shell Detection", tags:[["Splunk","green"],["Netcat","red"],["C2","amber"]], desc:"Identified reverse shell connections by monitoring for outbound connections on non-standard ports and suspicious process-to-network correlations.", tools:["Splunk","Netcat","Metasploit"], spl:`index=main sourcetype=syslog\n| <span class="spl-kw">search</span> <span class="spl-val">"/bin/sh" OR "bash -i"</span>\n| <span class="spl-pipe">table</span> _time, host, user, command` },
+  { num:"LAB-04", name:"End-to-End SOC Simulation", tags:[["SOC","green"],["Full-cycle","blue"],["Triage","amber"]], desc:"Ran a complete SOC simulation from attack injection to alert triage, investigation, and response documentation — mimicking real-world analyst workflow.", tools:["Splunk","Kali Linux","VirtualBox"], spl:null },
+  { num:"LAB-05", name:"Custom Python IDS", tags:[["Python","blue"],["IDS","green"],["Scapy","amber"]], desc:"Built ids_detector.py — a lightweight intrusion detection script using Python and Scapy to sniff packets and flag suspicious activity in real time on the home lab network.", tools:["Python","Scapy","Splunk"], spl:null },
+  { num:"LAB-06", name:"Beaconing Traffic Detection", tags:[["C2","red"],["Splunk","green"],["Beaconing","amber"]], desc:"Detected C2 beaconing by identifying periodic, low-and-slow outbound connections with consistent intervals — a hallmark of malware calling home.", tools:["Splunk","Zeek","Kali Linux"], spl:`index=main sourcetype=network_traffic\n| <span class="spl-kw">timechart</span> span=1m <span class="spl-val">count</span> by dest_ip\n| <span class="spl-pipe">where</span> stddev(count) &lt; 2` },
+  { num:"LAB-07", name:"Exploitation Visibility", tags:[["Metasploit","red"],["Splunk","green"],["Post-exploit","amber"]], desc:"Captured and analyzed post-exploitation activity — privilege escalation, lateral movement — and built Splunk rules to surface exploit chain behavior.", tools:["Metasploit","Splunk","Windows Event Log"], spl:null },
+  { num:"LAB-08", name:"Web Attack Detection via DVWA", tags:[["DVWA","amber"],["SQLi","red"],["XSS","blue"]], desc:"Used DVWA to simulate SQLi, XSS, and command injection attacks, then built Splunk detection rules to identify web attack patterns in HTTP logs.", tools:["DVWA","Splunk","Burp Suite"], spl:`index=main sourcetype=access_log\n| <span class="spl-kw">search</span> <span class="spl-val">"union select" OR "script" OR ";"</span>\n| <span class="spl-pipe">table</span> _time, clientip, uri_path, status` },
+  { num:"LAB-09", name:"Network Baseline vs Attack Analysis", tags:[["Baseline","blue"],["Anomaly","red"],["Splunk","green"]], desc:"Established a clean network baseline and compared it against attack traffic to identify statistical anomalies — key for behavior-based detection engineering.", tools:["Splunk","Wireshark","Python"], spl:null },
+  { num:"LAB-10", name:"Detection Rule Tuning", tags:[["Tuning","green"],["FP reduction","amber"],["SPL","blue"]], desc:"Iteratively tuned detection rules to reduce false positives while maintaining high recall — balancing sensitivity with analyst workload in a realistic SOC environment.", tools:["Splunk","Excel","Python"], spl:null }
+];
+const grid=document.getElementById('labsGrid');
+const panel=document.getElementById('detailPanel');
+const splBlock=document.getElementById('splBlock');
+let activeIdx=null;
+labs.forEach((lab,i)=>{
+  const card=document.createElement('div');
+  card.className='lab-card';
+  card.innerHTML=`<div class="lab-num">${lab.num}</div><div class="lab-name">${lab.name}</div><div class="lab-tags">${lab.tags.map(([t,c])=>`<span class="tag tag-${c}">${t}</span>`).join('')}</div><div class="lab-status"><div class="status-dot"></div> complete</div>`;
+  card.addEventListener('click',()=>{
+    if(activeIdx===i){card.classList.remove('active');panel.classList.remove('visible');activeIdx=null;return;}
+    document.querySelectorAll('.lab-card').forEach(c=>c.classList.remove('active'));
+    card.classList.add('active');activeIdx=i;
+    document.getElementById('detailTitle').textContent=`${lab.num} — ${lab.name}`;
+    document.getElementById('detailBody').textContent=lab.desc;
+    document.getElementById('detailTools').innerHTML=lab.tools.map(t=>`<span class="tag tag-green">${t}</span>`).join('');
+    if(lab.spl){splBlock.style.display='block';document.getElementById('splCode').innerHTML=lab.spl;}
+    else{splBlock.style.display='none';}
+    panel.classList.add('visible');
+    panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>
